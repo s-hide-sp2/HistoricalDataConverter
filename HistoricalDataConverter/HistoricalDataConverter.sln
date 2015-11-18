@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HistoricalDataConverter", "HistoricalDataConverter\HistoricalDataConverter.vcxproj", "{A5B6F0D8-7BE5-4883-A873-DED2C04E74E2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A5B6F0D8-7BE5-4883-A873-DED2C04E74E2}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A5B6F0D8-7BE5-4883-A873-DED2C04E74E2}.Debug|Win32.Build.0 = Debug|Win32
+		{A5B6F0D8-7BE5-4883-A873-DED2C04E74E2}.Release|Win32.ActiveCfg = Release|Win32
+		{A5B6F0D8-7BE5-4883-A873-DED2C04E74E2}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

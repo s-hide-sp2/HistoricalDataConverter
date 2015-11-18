@@ -1,0 +1,43 @@
+cd /d L:\SVNProjects\HistoricalDataConverter\Debug\OutGBPUSD
+copy GBPUSD-2004-Bid.csv+GBPUSD-2005-Bid.csv temp1.csv
+copy temp1.csv+GBPUSD-2006-Bid.csv temp2.csv
+copy temp2.csv+GBPUSD-2007-Bid.csv temp3.csv
+copy temp3.csv+GBPUSD-2008-Bid.csv temp4.csv
+copy temp4.csv+GBPUSD-2009-Bid.csv temp5.csv
+copy temp5.csv+GBPUSD-2010-Bid.csv temp6.csv
+copy temp6.csv+GBPUSD-2011-Bid.csv temp7.csv
+copy temp7.csv+GBPUSD-2012-Bid.csv temp8.csv
+copy temp8.csv+GBPUSD-2013-1-8-Bid.csv GBPUSD-5-Bid.csv
+del temp*.csv
+
+copy GBPUSD-2004-Ask.csv+GBPUSD-2005-Ask.csv temp1.csv
+copy temp1.csv+GBPUSD-2006-Ask.csv temp2.csv
+copy temp2.csv+GBPUSD-2007-Ask.csv temp3.csv
+copy temp3.csv+GBPUSD-2008-Ask.csv temp4.csv
+copy temp4.csv+GBPUSD-2009-Ask.csv temp5.csv
+copy temp5.csv+GBPUSD-2010-Ask.csv temp6.csv
+copy temp6.csv+GBPUSD-2011-Ask.csv temp7.csv
+copy temp7.csv+GBPUSD-2012-Ask.csv temp8.csv
+copy temp8.csv+GBPUSD-2013-1-8-Ask.csv GBPUSD-5-Ask.csv
+
+cd /d L:\ChartData\OANDA_Tick\USDCHF
+copy USDCHF-2004.csv+USDCHF-2005.csv temp1.csv
+copy temp1.csv+USDCHF-2006.csv temp2.csv
+copy temp2.csv+USDCHF-2007.csv temp3.csv
+copy temp3.csv+USDCHF-2008.csv temp4.csv
+copy temp4.csv+USDCHF-2009.csv temp5.csv
+copy temp5.csv+USDCHF-2010.csv temp6.csv
+copy temp6.csv+USDCHF-2011.csv temp7.csv
+copy temp7.csv+USDCHF-2012.csv temp8.csv
+copy temp8.csv+USDCHF-2013-1-8.csv USDCHF-2004_2013-1-8.csv
+del temp*.csv
+
+cd /d L:\SVNProjects\HistoricalDataConverter\Debug\OutEURUSD
+copy EURUSD-2004_2011-Bid.csv+EURUSD-2012-Bid.csv temp1.csv
+copy temp1.csv+EURUSD-2013-01-08-Bid.csv EURUSD-2004_2013-01-08-Bid.csv
+copy EURUSD-2004_2011-Ask.csv+EURUSD-2012-Ask.csv temp1.csv
+copy temp1.csv+EURUSD-2013-01-08-Ask.csv EURUSD-2004_2013-01-08-Ask.csv
+
+cd /d L:\ChartData\OANDA_Tick\EURUSD\”N“x•Ê
+copy EURUSD-2004_2011.csv+EURUSD-2012.csv temp1.csv
+copy temp1.csv+EURUSD-2013-01-08.csv EURUSD-2004_2013-01-08.csv

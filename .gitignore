@@ -1,0 +1,24 @@
+
+# /
+/*.user
+/*.suo
+/*.project
+/*.ncb
+/*.opt
+/*.cdtproject
+/*.sbr
+/*.suo
+/*.sdf
+/*.msi
+/ipch
+
+#/Debug/
+/Debug/*
+/HistoricalDataConverter/Debug/*
+
+#/Release/
+/Release/*
+/HistoricalDataConverter/Release/*
+
+# /HistoricalDataConverter
+/HistoricalDataConverte/HistoricalDataConverter.vcxproj.user
