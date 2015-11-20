@@ -9,6 +9,8 @@ public:
 	hdcBar(void);
 	virtual ~hdcBar(void);
 
+	static Hdc::Result Generate( hdcBar& bar, const CString& strData, Hdc::BarKind barKind = Hdc::Bid );
+
 	//	ƒŒ[ƒg‚ğ•Ô‚·
 	double Rate( Hdc::RateKind rateKind, Hdc::BarKind barKind = Hdc::Bid ) const;
 	double Open( Hdc::BarKind barKind = Hdc::Bid ) const;

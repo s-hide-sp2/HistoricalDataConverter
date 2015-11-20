@@ -568,3 +568,116 @@ Hdc::Result hdcChart::Extract(
 	return result;
 }
 
+//	欠損データを埋める
+Hdc::Result hdcChart::FillLackData( 
+	LPCTSTR lpszSrcPath, 
+	int nSrcPeriod, 
+	LPCTSTR lpszOutPath, 
+	bool bSkipFirstRow 
+	)
+{
+	Hdc::Result result = Hdc::rOk;
+
+	SetPeriod( nSrcPeriod );
+	SetOutputPeriod( nSrcPeriod );
+
+	if( nSrcPeriod == 0 )
+		return Hdc::rCancel;
+
+	try{
+		CStdioFile cfr( lpszSrcPath, CFile::modeRead | CFile::typeText );
+		CStdioFile cfw( lpszOutPath, CFile::modeCreate | CFile::modeWrite | CFile::typeText );
+		CString strData;
+		BOOL bRead = TRUE;
+
+		InitOutputLogTerm();
+		WriteHeader( cfw );
+				
+		if( bSkipFirstRow )
+			bRead = cfr.ReadString( strData );
+
+		hdcBar barA, barB;
+		mapBar lackBars;
+
+		for( bool isFirst = true; isFirst || bRead; isFirst = false ){
+			bRead = cfr.ReadString( strData );
+			
+			if( bRead ){
+				result = hdcBar::Generate( barA, strData, Hdc::Bid );
+			
+				if( Hdc::rOk == result && !isFirst ){
+					GetLackData(lackBars, barA, barB );
+				}
+
+				for each( const auto& pair in lackBars ){
+					const auto& bar = pair.second;
+					
+					result = Write( cfw, bar, Hdc::Bid );
+					assert( Hdc::rOk == result );
+				}
+
+				if( Hdc::rOk == result ){
+					result = Write( cfw, barA, Hdc::Bid );
+				}
+
+				barB = barA;
+			}
+
+			lackBars.clear();
+		}
+	}
+	catch(...){
+		result = Hdc::rFileOpenError;
+	}
+
+	return result;
+}
+
+//	欠損データを出力する
+void hdcChart::GetLackData( mapBar& bars, const hdcBar& barAfter, const hdcBar& barBefore )
+{
+	Hdc::Result result = Hdc::rOk;
+	const auto spanBeforeAfter = barAfter.Time() - barBefore.Time();
+	const auto& timeBefore = barBefore.Time();
+	const int day = Period()/HDC_PERIOD_D1;
+	const int hour = Period()/HDC_PERIOD_H1;
+	const int minutes = (Period() < HDC_PERIOD_H1) ? Period() : 0;
+	const int second = 0;
+	COleDateTimeSpan span( day, hour, minutes, second );
+	
+	if( spanBeforeAfter.GetTotalMinutes() == Period() )
+		return;
+
+	const int nLackBarCount = static_cast<int>(spanBeforeAfter.GetTotalMinutes() / Period()) - 1;
+	const double dInit = static_cast<const double>(nLackBarCount + 1);
+	const double dStep[] ={ ( barAfter.Open()- barBefore.Open() ) / dInit,
+							( barAfter.High()- barBefore.High() ) / dInit,
+							( barAfter.Low()- barBefore.Low() ) / dInit,
+							( barAfter.Close()- barBefore.Close() ) / dInit };
+	double dRates[] = { barBefore.Open(), barBefore.High(), barBefore.Low(), barBefore.Close() };
+	hdcBar bar;
+
+	//	欠落バーをコンテナに追加
+	for( hdcTime time = barBefore.Time() + span; time < barAfter.Time(); time += span ){
+		dRates[Hdc::Open] += dStep[Hdc::Open];
+		dRates[Hdc::High] += dStep[Hdc::High];
+		dRates[Hdc::Low] += dStep[Hdc::Low];
+		dRates[Hdc::Close] += dStep[Hdc::Close];
+		bar.SetTime(time);
+		bar.SetRate(dRates);
+		bars[time] = bar;
+	}
+
+	//	マーケットが閉じているバーを除外する
+	auto it = bars.begin();
+	auto end = bars.end();
+
+	while( it != end ){
+		const auto& time = it->first;
+
+		if( Hdc::Saturday == time.GetDayOfWeek() || Hdc::Sunday == time.GetDayOfWeek() )
+			bars.erase(it++);
+		else
+			it++;
+	}
+}

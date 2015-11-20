@@ -29,6 +29,9 @@ public:
 	//	抽出する
 	Hdc::Result Extract( LPCTSTR lpszSrcPath, LPCTSTR lpszOutPath, const hdcTime& timeBegin, const hdcTime& timeEnd, Hdc::TimeFormat timeFormat );
 
+	//	欠損データを埋める
+	Hdc::Result FillLackData( LPCTSTR lpszSrcPath, int nSrcPeriod, LPCTSTR lpszOutPath, bool bSkipFirstRow );
+
 	///////////////////////////////////////////////////
 	//
 	//	Get/Set
@@ -67,6 +70,9 @@ protected:
 
 	//	欠損データを埋める
 	//Hdc::Result FillLackData( hdcTime& timeNext, const hdcTime& timeCur, CStdioFile& cfBid, CStdioFile& cfAsk );
+
+	//	欠損データを出力する
+	void GetLackData( mapBar& bars, const hdcBar& barAfter, const hdcBar& barBefore );
 
 	//	プライスの小数桁数を返す
 	int Decimal() const;

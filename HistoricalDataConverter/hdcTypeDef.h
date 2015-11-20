@@ -15,6 +15,17 @@ typedef std::list<hdcTerm> lstTerm;
 typedef std::vector<CString> vecString;
 typedef std::map<hdcTime, hdcBar> mapBar;
 
+#define HDC_PERIOD_TICK	(0)
+#define HDC_PERIOD_M1	(1)
+#define HDC_PERIOD_M5	(5)
+#define HDC_PERIOD_M15	(15)
+#define HDC_PERIOD_M30	(30)
+#define HDC_PERIOD_H1	(60)
+#define HDC_PERIOD_H4	(240)
+#define HDC_PERIOD_D1	(1440)
+#define HDC_PERIOD_W1	(10080)
+#define HDC_PERIOD_MN1	(43200)
+
 namespace Hdc{
 	enum Result{
 		rOk,

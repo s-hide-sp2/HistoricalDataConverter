@@ -58,4 +58,5 @@
 #include <vector>
 #include <map>
 #include <list>
+#include <algorithm>
 #include "hdcTypeDef.h"

@@ -54,4 +54,8 @@ public:
 private:
 	// “ú•t‘®
 	int m_nTimeFormat;
+public:
+	afx_msg void OnBnClickedBtnFillLackData();
+private:
+	BOOL m_bSkipFirstLow;
 };

@@ -1,4 +1,5 @@
 #include "StdAfx.h"
+#include "hdcUtility.h"
 #include "hdcBar.h"
 
 
@@ -10,6 +11,37 @@ hdcBar::hdcBar(void)
 
 hdcBar::~hdcBar(void)
 {
+}
+
+Hdc::Result hdcBar::Generate( hdcBar& bar, const CString& strData, Hdc::BarKind barKind )
+{
+	Hdc::Result result = Hdc::rOk;
+	vecString vecToken;
+	hdcTime time;
+	const TCHAR szSep[] = _T(",");
+
+	vecToken.reserve(6);
+	hdcUtility::GetTokens( vecToken, strData, szSep );
+
+	if( vecToken.size() < 6 ){
+		result = Hdc::rFail;
+	}
+	else{
+		result = hdcUtility::GetTimeYYYYMMDD_HHMMSS( time, vecToken[0], vecToken[1] );
+	}
+
+	if( Hdc::rOk == result ){
+		double dRates[NUM_OF_BAR_VALUE_KIND];
+		
+		for( int n = 0; n < NUM_OF_BAR_VALUE_KIND; n++ ){
+			dRates[n] = _ttof( vecToken[n+2] );
+		}
+
+		bar.SetTime( time );
+		bar.SetRate( dRates, barKind );
+	}
+	
+	return result;
 }
 
 //	ティックを追加する

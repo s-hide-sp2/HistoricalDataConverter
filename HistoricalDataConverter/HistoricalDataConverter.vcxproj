@@ -103,6 +103,7 @@
     <ClInclude Include="hdcChart.h" />
     <ClInclude Include="hdcCmdConvertPeriod.h" />
     <ClInclude Include="hdcCmdExtract.h" />
+    <ClInclude Include="hdcCmdFillLackData.h" />
     <ClInclude Include="hdcCommand.h" />
     <ClInclude Include="hdcTypeDef.h" />
     <ClInclude Include="hdcUtility.h" />
@@ -117,6 +118,7 @@
     <ClCompile Include="hdcChart.cpp" />
     <ClCompile Include="hdcCmdConvertPeriod.cpp" />
     <ClCompile Include="hdcCmdExtract.cpp" />
+    <ClCompile Include="hdcCmdFillLackData.cpp" />
     <ClCompile Include="hdcCommand.cpp" />
     <ClCompile Include="hdcUtility.cpp" />
     <ClCompile Include="HistoricalDataConverter.cpp" />

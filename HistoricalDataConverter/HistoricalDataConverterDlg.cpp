@@ -8,6 +8,7 @@
 #include "afxdialogex.h"
 #include "hdcCmdConvertPeriod.h"
 #include "hdcCmdExtract.h"
+#include "hdcCmdFillLackData.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -52,14 +53,15 @@ END_MESSAGE_MAP()
 
 CHistoricalDataConverterDlg::CHistoricalDataConverterDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CHistoricalDataConverterDlg::IDD, pParent)
-	, m_strDataFolder(_T("L:\\SVNProjects\\HistoricalDataConverter\\Debug\\Data"))
-	, m_strOutputFolder(_T("L:\\SVNProjects\\HistoricalDataConverter\\Debug\\Out"))
+	, m_strDataFolder(_T("C:\\GitHub\\HistoricalDataConverter\\Data"))
+	, m_strOutputFolder(_T("C:\\GitHub\\HistoricalDataConverter\\Out"))
 	, m_nPeriod(0)
 	, m_nShiftTime(420)
 	, m_nOutputPeriod(1)
 	, m_timeBegin(COleDateTime::GetCurrentTime())
 	, m_timeEnd(COleDateTime::GetCurrentTime())
 	, m_nTimeFormat(0)
+	, m_bSkipFirstLow(TRUE)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -82,6 +84,7 @@ void CHistoricalDataConverterDlg::DoDataExchange(CDataExchange* pDX)
 	//  DDX_Text(pDX, IDC_CMB_TIME_FORMAT, m_nTimeFormat);
 	//DDX_CBString(pDX, IDC_CMB_TIME_FORMAT, m_nTimeFormat);
 	DDX_CBIndex(pDX, IDC_CMB_TIME_FORMAT, m_nTimeFormat);
+	DDX_Check(pDX, IDC_CHK_SKIP_FIRST_LOW, m_bSkipFirstLow);
 }
 
 BEGIN_MESSAGE_MAP(CHistoricalDataConverterDlg, CDialogEx)
@@ -90,6 +93,7 @@ BEGIN_MESSAGE_MAP(CHistoricalDataConverterDlg, CDialogEx)
 	ON_WM_QUERYDRAGICON()
 	ON_BN_CLICKED(IDC_BTN_CNV_PERIOD, &CHistoricalDataConverterDlg::OnBnClickedBtnCnvPeriod)
 	ON_BN_CLICKED(IDC_BTN_EXTRACT, &CHistoricalDataConverterDlg::OnBnClickedBtnExtract)
+	ON_BN_CLICKED(IDC_BTN_FILL_LACK_DATA, &CHistoricalDataConverterDlg::OnBnClickedBtnFillLackData)
 END_MESSAGE_MAP()
 
 
@@ -217,4 +221,20 @@ void CHistoricalDataConverterDlg::OnBnClickedBtnExtract()
 		hdcCommand::Execute( cmd );
 	}
 	
+}
+
+
+void CHistoricalDataConverterDlg::OnBnClickedBtnFillLackData()
+{
+	if( UpdateData(TRUE) ){
+		hdcCmdFillLackData cmd;
+
+		cmd.SetDataFolder( m_strDataFolder );
+		cmd.SetOutputFolder( m_strOutputFolder );
+		cmd.SetPeriod( m_nPeriod );
+		cmd.SetSkipFirstRow( m_bSkipFirstLow );
+
+		hdcCommand::Execute( cmd );
+	}
+
 }
