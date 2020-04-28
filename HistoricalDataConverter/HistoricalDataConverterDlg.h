@@ -58,4 +58,6 @@ public:
 	afx_msg void OnBnClickedBtnFillLackData();
 private:
 	BOOL m_bSkipFirstLow;
+public:
+	afx_msg void OnBnClickedBtnOutLackData();
 };

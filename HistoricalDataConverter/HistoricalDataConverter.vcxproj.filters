@@ -63,6 +63,15 @@
     <ClInclude Include="hdcCmdFillLackData.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="hdcExcludedPeriod.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="hdcExcludedPeriodManager.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="hdcCmdOutLackData.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HistoricalDataConverter.cpp">
@@ -93,6 +102,15 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="hdcCmdFillLackData.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="hdcExcludedPeriod.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="hdcExcludedPeriodManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="hdcCmdOutLackData.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>

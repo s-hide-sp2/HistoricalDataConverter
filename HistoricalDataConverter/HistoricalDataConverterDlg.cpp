@@ -9,6 +9,7 @@
 #include "hdcCmdConvertPeriod.h"
 #include "hdcCmdExtract.h"
 #include "hdcCmdFillLackData.h"
+#include "hdcCmfOutLackData.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -53,10 +54,11 @@ END_MESSAGE_MAP()
 
 CHistoricalDataConverterDlg::CHistoricalDataConverterDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CHistoricalDataConverterDlg::IDD, pParent)
-	, m_strDataFolder(_T("C:\\GitHub\\HistoricalDataConverter\\Data"))
-	, m_strOutputFolder(_T("C:\\GitHub\\HistoricalDataConverter\\Out"))
-	, m_nPeriod(0)
-	, m_nShiftTime(420)
+	, m_strDataFolder(_T("C:\\data\\HistoricalData\\Debug"))
+	, m_strOutputFolder(_T("C:\\data\\HistoricalData\\Debug\\Out"))
+	, m_nPeriod(1)
+	//, m_nShiftTime(420)
+	, m_nShiftTime(0)
 	, m_nOutputPeriod(1)
 	, m_timeBegin(COleDateTime::GetCurrentTime())
 	, m_timeEnd(COleDateTime::GetCurrentTime())
@@ -94,6 +96,7 @@ BEGIN_MESSAGE_MAP(CHistoricalDataConverterDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BTN_CNV_PERIOD, &CHistoricalDataConverterDlg::OnBnClickedBtnCnvPeriod)
 	ON_BN_CLICKED(IDC_BTN_EXTRACT, &CHistoricalDataConverterDlg::OnBnClickedBtnExtract)
 	ON_BN_CLICKED(IDC_BTN_FILL_LACK_DATA, &CHistoricalDataConverterDlg::OnBnClickedBtnFillLackData)
+	ON_BN_CLICKED(IDC_BTN_OUT_LACK_DATA, &CHistoricalDataConverterDlg::OnBnClickedBtnOutLackData)
 END_MESSAGE_MAP()
 
 
@@ -195,6 +198,7 @@ void CHistoricalDataConverterDlg::OnBnClickedBtnCnvPeriod()
 		cmd.SetPeriod( m_nPeriod );
 		cmd.SetOutputPeriod( m_nOutputPeriod );
 		cmd.SetShiftTime( m_nShiftTime );
+		cmd.SetSkipFirstRow(m_bSkipFirstLow);
 
 		hdcCommand::Execute( cmd );
 	}
@@ -237,4 +241,20 @@ void CHistoricalDataConverterDlg::OnBnClickedBtnFillLackData()
 		hdcCommand::Execute( cmd );
 	}
 
+}
+
+
+void CHistoricalDataConverterDlg::OnBnClickedBtnOutLackData()
+{
+	// TODO: ここにコントロール通知ハンドラー コードを追加します。
+	if (UpdateData(TRUE)) {
+		hdcCmfOutLackData cmd;
+
+		cmd.SetDataFolder(m_strDataFolder);
+		cmd.SetOutputFolder(m_strOutputFolder);
+		cmd.SetPeriod(m_nPeriod);
+		cmd.SetSkipFirstRow(m_bSkipFirstLow);
+
+		hdcCommand::Execute(cmd);
+	}
 }

@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "hdcUtility.h"
 #include "hdcChart.h"
+#include "hdcExcludedPeriodManager.h"
 
 hdcChart::hdcChart(void)
 	: m_nPeriod(1)
@@ -40,7 +41,6 @@ Hdc::Result hdcChart::Generate(
 		hdcTime time, timePrev;
 
 		InitOutputLogTerm();
-		WriteHeader( cfw );
 
 		vecToken.reserve(6);
 		
@@ -87,11 +87,12 @@ Hdc::Result hdcChart::Generate(
 			
 			if( result == Hdc::rOk ){
 				double dRates[hdcBar::NUM_OF_BAR_VALUE_KIND];
+				int volume = (6 < vecToken.size()) ? _ttoi(vecToken[6]) : 1;
 
 				for( int n = 0; n < hdcBar::NUM_OF_BAR_VALUE_KIND; n++ )
 					dRates[n] = _ttof( vecToken[2+n] );
 
-				result = AddBarTemp( bNext, time, dRates );
+				result = AddBarTemp( bNext, time, dRates, volume);
 			}
 		}
 
@@ -131,8 +132,6 @@ Hdc::Result hdcChart::GenerateFromTick(
 #endif
 		SetPeriod(0);
 		InitOutputLogTerm();
-		WriteHeader( cfwBid );
-		WriteHeader( cfwAsk );
 		
 		while( cfr.ReadString( strData ) && result == Hdc::rOk ){
 			hdcTime time;
@@ -283,7 +282,8 @@ Hdc::Result hdcChart::AddBarTemp(
 Hdc::Result hdcChart::AddBarTemp( 
 	bool bNextBarTime,		//(i)次バーフラグ
 	const hdcTime& time,	//(i)日時
-	const double dRates[]	//(i)レート
+	const double dRates[],	//(i)レート
+	int volume				//(i)出来高
 )
 {
 	Hdc::Result result = Hdc::rOk;
@@ -314,18 +314,12 @@ Hdc::Result hdcChart::AddBarTemp(
 		AddBar( m_barTemp );
 	}
 
-	if( result == Hdc::rOk )
+	if( result == Hdc::rOk ){
 		m_barTemp.AddRates(dRates);
+		m_barTemp.AddVolume(volume);
+	}
 
 	return result;
-}
-
-//	ヘッダー出力
-Hdc::Result hdcChart::WriteHeader( CStdioFile& cf )
-{
-	cf.WriteString( _T("Date,Time,Open,High,Low,Close\n") );
-
-	return Hdc::rOk;
 }
 
 //	バーデータ出力
@@ -339,7 +333,7 @@ Hdc::Result hdcChart::Write(
 	CString str;
 	int nDecimal = Decimal();
 
-	str.Format(_T("%s,%s,%.*lf,%.*lf,%.*lf,%.*lf\n"), 
+	str.Format(_T("%s,%s,%.*lf,%.*lf,%.*lf,%.*lf,%d\n"), 
 		bar.Time().Format(_T("%Y.%m.%d")),
 		bar.Time().Format(_T("%H:%M:%S")),
 		nDecimal,
@@ -349,7 +343,8 @@ Hdc::Result hdcChart::Write(
 		nDecimal,
 		bar.Low( barKind ),
 		nDecimal,
-		bar.Close( barKind ) );
+		bar.Close( barKind ),
+		bar.Volume());
 
 	cf.WriteString( str );
 
@@ -591,7 +586,6 @@ Hdc::Result hdcChart::FillLackData(
 		BOOL bRead = TRUE;
 
 		InitOutputLogTerm();
-		WriteHeader( cfw );
 				
 		if( bSkipFirstRow )
 			bRead = cfr.ReadString( strData );
@@ -636,6 +630,16 @@ Hdc::Result hdcChart::FillLackData(
 //	欠損データを出力する
 void hdcChart::GetLackData( mapBar& bars, const hdcBar& barAfter, const hdcBar& barBefore )
 {
+	const auto& exMan = hdcExcludedPeriodManager::instance();
+
+	if (exMan.isIn(barAfter.Time()) || exMan.isIn(barBefore.Time())) {
+		hdcUtility::WriteLog(OutputLogFilePath()
+			, _T("ExcludedPeriod %s-%s\n")
+			, barBefore.Time().Format(_T("%D"))
+			, barAfter.Time().Format(_T("%D")) );
+		return;
+	}
+
 	Hdc::Result result = Hdc::rOk;
 	const auto spanBeforeAfter = barAfter.Time() - barBefore.Time();
 	const auto& timeBefore = barBefore.Time();
@@ -665,6 +669,7 @@ void hdcChart::GetLackData( mapBar& bars, const hdcBar& barAfter, const hdcBar& 
 		dRates[Hdc::Close] += dStep[Hdc::Close];
 		bar.SetTime(time);
 		bar.SetRate(dRates);
+		bar.SetVolume(barAfter.Volume());
 		bars[time] = bar;
 	}
 
@@ -681,3 +686,77 @@ void hdcChart::GetLackData( mapBar& bars, const hdcBar& barAfter, const hdcBar& 
 			it++;
 	}
 }
+
+//	欠損データを出力する
+Hdc::Result hdcChart::OutputLackData(LPCTSTR lpszSrcPath, int nSrcPeriod, LPCTSTR lpszOutPath, bool bSkipFirstRow)
+{
+	Hdc::Result result = Hdc::rOk;
+
+	SetPeriod(nSrcPeriod);
+	SetOutputPeriod(nSrcPeriod);
+
+	if (nSrcPeriod == 0)
+		return Hdc::rCancel;
+
+	try {
+		CStdioFile cfr(lpszSrcPath, CFile::modeRead | CFile::typeText);
+		CStdioFile cfw(lpszOutPath, CFile::modeCreate | CFile::modeWrite | CFile::typeText);
+		CString strData;
+		BOOL bRead = TRUE;
+
+		InitOutputLogTerm();
+
+		if (bSkipFirstRow)
+			bRead = cfr.ReadString(strData);
+
+		hdcBar barA, barB;
+		mapBar lackBars;
+
+		for (bool isFirst = true; isFirst || bRead; isFirst = false) {
+			bRead = cfr.ReadString(strData);
+
+			if (bRead) {
+				result = hdcBar::Generate(barA, strData, Hdc::Bid);
+
+				//	欠落データを出力する
+				if (Hdc::rOk == result && !isFirst) {
+					GetLackData(lackBars, barA, barB);
+				}
+
+				for each(const auto& pair in lackBars) {
+					const auto& bar = pair.second;
+
+					result = Write(cfw, bar, Hdc::Bid);
+					assert(Hdc::rOk == result);
+				}
+
+				barB = barA;
+			}
+
+			lackBars.clear();
+		}
+	}
+	catch (...) {
+		result = Hdc::rFileOpenError;
+	}
+
+	return result;
+}
+
+//	ログ出力ファイルパスを返す
+CString hdcChart::OutputLogFilePath() const
+{
+	TCHAR szPathResult[MAX_PATH];
+	TCHAR szPath[MAX_PATH];
+	TCHAR szDrive[_MAX_DRIVE];
+	TCHAR szDir[_MAX_DIR];
+	TCHAR szFName[_MAX_FNAME];
+
+	::GetModuleFileName(NULL, szPath, MAX_PATH);
+	_tsplitpath(szPath, szDrive, szDir, NULL, NULL);
+	_stprintf(szFName, _T("%s-%d"), Symbol(), Period());
+	_tmakepath(szPathResult, szDrive, szDir, szFName, _T(".log"));
+
+	return szPathResult;
+}
+

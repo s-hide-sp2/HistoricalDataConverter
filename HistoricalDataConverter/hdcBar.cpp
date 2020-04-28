@@ -6,6 +6,7 @@
 hdcBar::hdcBar(void)
 {
 	ClearRate();
+	m_volume = 0;
 }
 
 
@@ -32,6 +33,7 @@ Hdc::Result hdcBar::Generate( hdcBar& bar, const CString& strData, Hdc::BarKind 
 
 	if( Hdc::rOk == result ){
 		double dRates[NUM_OF_BAR_VALUE_KIND];
+		int volume = (6 < vecToken.size()) ? _ttoi(vecToken[6]) : 1;
 		
 		for( int n = 0; n < NUM_OF_BAR_VALUE_KIND; n++ ){
 			dRates[n] = _ttof( vecToken[n+2] );
@@ -39,6 +41,7 @@ Hdc::Result hdcBar::Generate( hdcBar& bar, const CString& strData, Hdc::BarKind 
 
 		bar.SetTime( time );
 		bar.SetRate( dRates, barKind );
+		bar.SetVolume(volume);
 	}
 	
 	return result;
@@ -88,3 +91,7 @@ void hdcBar::AddRates( const double dRates[], Hdc::BarKind barKind )
 	m_dValue[Hdc::Close + barKind] = dRates[Hdc::Close];
 }
 
+void hdcBar::AddVolume(int volume)
+{
+	m_volume += volume;
+}

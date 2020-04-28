@@ -32,6 +32,9 @@ public:
 	//	欠損データを埋める
 	Hdc::Result FillLackData( LPCTSTR lpszSrcPath, int nSrcPeriod, LPCTSTR lpszOutPath, bool bSkipFirstRow );
 
+	//	欠損データを出力する
+	Hdc::Result OutputLackData(LPCTSTR lpszSrcPath, int nSrcPeriod, LPCTSTR lpszOutPath, bool bSkipFirstRow);
+
 	///////////////////////////////////////////////////
 	//
 	//	Get/Set
@@ -57,13 +60,10 @@ protected:
 	Hdc::Result AddBarTemp( bool bNextBarTime, const hdcTime& time, double dBid, double dAsk);
 
 	//	作業用バーにデータを追加する
-	Hdc::Result AddBarTemp( bool bNextBarTime, const hdcTime& time, const double dRates[] );
+	Hdc::Result AddBarTemp( bool bNextBarTime, const hdcTime& time, const double dRates[], int volume );
 
 	//	バーを追加する
 	void AddBar( const hdcBar& bar );
-
-	//	ヘッダー出力
-	Hdc::Result WriteHeader( CStdioFile& cf );
 
 	//	バーデータ出力
 	Hdc::Result Write( CStdioFile& cf, const hdcBar& bar, Hdc::BarKind barKind );
@@ -162,13 +162,3 @@ inline const hdcTimeSpan& hdcChart::ShiftTime() const
 {
 	return m_spanShift;
 }
-
-//	ログ出力ファイルパスを返す
-inline CString hdcChart::OutputLogFilePath() const
-{
-	CString str;
-
-	str.Format( _T("L:\\SVNProjects\\HistoricalDataConverter\\Log\\%s-%d.log"), Symbol(), Period() );
-	return str;
-}
-

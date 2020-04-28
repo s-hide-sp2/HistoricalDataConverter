@@ -34,11 +34,18 @@ public:
 	//	レートを追加する
 	void AddRates( const double dRates[], Hdc::BarKind barKind = Hdc::Bid );
 
+	void SetVolume(int value);
+	int Volume() const;
+
+	void AddVolume(int volume);
+
 private:
 
 	hdcTime m_time;
 
 	double m_dValue[NUM_OF_BAR_VALUE_KIND*2];
+
+	int m_volume;
 };
 
 //	レートを返す
@@ -93,5 +100,15 @@ inline const hdcTime& hdcBar::Time() const
 inline void hdcBar::ClearRate()
 {
 	memset( m_dValue, 0, sizeof(m_dValue) );
+	m_volume = 0;
 }
 
+inline void hdcBar::SetVolume(int value)
+{
+	m_volume = value;
+}
+
+inline int hdcBar::Volume() const
+{
+	return m_volume;
+}
