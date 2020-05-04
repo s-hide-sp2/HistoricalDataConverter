@@ -19,7 +19,7 @@ Hdc::Result hdcBar::Generate( hdcBar& bar, const CString& strData, Hdc::BarKind 
 	Hdc::Result result = Hdc::rOk;
 	vecString vecToken;
 	hdcTime time;
-	const TCHAR szSep[] = _T(",");
+	const TCHAR szSep[] = _T(",\t");
 
 	vecToken.reserve(6);
 	hdcUtility::GetTokens( vecToken, strData, szSep );

@@ -9,7 +9,7 @@
 #include "hdcCmdConvertPeriod.h"
 #include "hdcCmdExtract.h"
 #include "hdcCmdFillLackData.h"
-#include "hdcCmfOutLackData.h"
+#include "hdcCmdOutLackData.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -248,7 +248,7 @@ void CHistoricalDataConverterDlg::OnBnClickedBtnOutLackData()
 {
 	// TODO: ここにコントロール通知ハンドラー コードを追加します。
 	if (UpdateData(TRUE)) {
-		hdcCmfOutLackData cmd;
+		hdcCmdOutLackData cmd;
 
 		cmd.SetDataFolder(m_strDataFolder);
 		cmd.SetOutputFolder(m_strOutputFolder);

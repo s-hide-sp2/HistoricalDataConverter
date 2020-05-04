@@ -36,7 +36,7 @@ Hdc::Result hdcChart::Generate(
 		CStdioFile cfr( lpszSrcPath, CFile::modeRead | CFile::typeText );
 		CStdioFile cfw( lpszOutPath, CFile::modeCreate | CFile::modeWrite | CFile::typeText );
 		CString strData;
-		const TCHAR szSep[] = _T(",");
+		const TCHAR szSep[] = _T(",\t");
 		vecString vecToken;
 		hdcTime time, timePrev;
 
@@ -124,7 +124,7 @@ Hdc::Result hdcChart::GenerateFromTick(
 		CStdioFile cfwBid( lpszOutPathBid, CFile::modeCreate | CFile::modeWrite | CFile::typeText );
 		CStdioFile cfwAsk( lpszOutPathAsk, CFile::modeCreate | CFile::modeWrite | CFile::typeText );
 		CString strData;
-		const TCHAR szSep[] = _T(",");
+		const TCHAR szSep[] = _T(",\t");
 		vecString vecToken;
 		hdcTime timePrev;
 #ifdef _DEBUG
@@ -520,7 +520,7 @@ Hdc::Result hdcChart::Extract(
 		CStdioFile cfw( lpszOutPath, CFile::modeCreate | CFile::modeWrite | CFile::typeText );
 		CString strData;
 		vecString vecToken;
-		const TCHAR szSep[] = _T(",");
+		const TCHAR szSep[] = _T(",\t");
 
 		vecToken.reserve(6);
 
@@ -648,10 +648,17 @@ void hdcChart::GetLackData( mapBar& bars, const hdcBar& barAfter, const hdcBar& 
 	const int minutes = (Period() < HDC_PERIOD_H1) ? Period() : 0;
 	const int second = 0;
 	COleDateTimeSpan span( day, hour, minutes, second );
-	
-	if( spanBeforeAfter.GetTotalMinutes() == Period() )
-		return;
+	const auto timeNext = barBefore.Time() + span;
 
+	if (spanBeforeAfter.GetTotalMinutes() == Period())
+		return;
+	else if (Hdc::Saturday == timeNext.GetDayOfWeek())
+		return;
+	
+#ifdef _DEBUG
+		auto debug1 = barBefore.Time().Format(_T("%D/%H:%M"));
+		auto debug2 = barAfter.Time().Format(_T("%D/%H:%M"));
+#endif
 	const int nLackBarCount = static_cast<int>(spanBeforeAfter.GetTotalMinutes() / Period()) - 1;
 	const double dInit = static_cast<const double>(nLackBarCount + 1);
 	const double dStep[] ={ ( barAfter.Open()- barBefore.Open() ) / dInit,
@@ -680,10 +687,12 @@ void hdcChart::GetLackData( mapBar& bars, const hdcBar& barAfter, const hdcBar& 
 	while( it != end ){
 		const auto& time = it->first;
 
-		if( Hdc::Saturday == time.GetDayOfWeek() || Hdc::Sunday == time.GetDayOfWeek() )
+		if (Hdc::Saturday == time.GetDayOfWeek() || Hdc::Sunday == time.GetDayOfWeek()) {
 			bars.erase(it++);
-		else
+		}	
+		else{
 			it++;
+		}
 	}
 }
 
