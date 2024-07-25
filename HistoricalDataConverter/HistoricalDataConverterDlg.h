@@ -60,4 +60,5 @@ private:
 	BOOL m_bSkipFirstLow;
 public:
 	afx_msg void OnBnClickedBtnOutLackData();
+	CComboBox m_cmbDataFormat;
 };

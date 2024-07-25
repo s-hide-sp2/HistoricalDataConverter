@@ -75,9 +75,19 @@ Hdc::Result hdcUtility::GetTimeYYYYMMDD_HHMMSS(
 	int nDate[3] = {0,0,0};
 	int nTime[3] = {0,0,0};
 	int n = 0;
+	bool isNoSep = false;
 
 	vecToken.reserve(3);
-	hdcUtility::GetTokens( vecToken, strDate, s_szDateSep );
+
+	if (strDate.GetLength() == 8) {
+		vecToken.push_back(strDate.Left(4));
+		vecToken.push_back(strDate.Mid(4,2));
+		vecToken.push_back(strDate.Right(2));
+		isNoSep = true;
+	}
+	else {
+		hdcUtility::GetTokens(vecToken, strDate, s_szDateSep);
+	}
 
 	if( vecToken.size() != 3 )
 		return Hdc::rFail;
@@ -86,7 +96,20 @@ Hdc::Result hdcUtility::GetTimeYYYYMMDD_HHMMSS(
 		nDate[n++] = _ttoi(token);
 	
 	vecToken.clear();
-	hdcUtility::GetTokens( vecToken, strTime, s_szTimeSep );
+
+	if (isNoSep) {
+		if (strTime.GetLength() == 6) {
+			vecToken.push_back(strTime.Left(2));
+			vecToken.push_back(strTime.Mid(2, 2));
+			vecToken.push_back(strTime.Right(2));
+		}
+		else {
+			return Hdc::rFail;
+		}
+	}
+	else {
+		hdcUtility::GetTokens(vecToken, strTime, s_szTimeSep);
+	}
 
 	if( vecToken.size() < 2 )
 		return Hdc::rFail;

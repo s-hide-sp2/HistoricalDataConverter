@@ -87,6 +87,7 @@ void CHistoricalDataConverterDlg::DoDataExchange(CDataExchange* pDX)
 	//DDX_CBString(pDX, IDC_CMB_TIME_FORMAT, m_nTimeFormat);
 	DDX_CBIndex(pDX, IDC_CMB_TIME_FORMAT, m_nTimeFormat);
 	DDX_Check(pDX, IDC_CHK_SKIP_FIRST_LOW, m_bSkipFirstLow);
+	DDX_Control(pDX, IDC_CMB_DATA_FORMAT, m_cmbDataFormat);
 }
 
 BEGIN_MESSAGE_MAP(CHistoricalDataConverterDlg, CDialogEx)
@@ -132,6 +133,7 @@ BOOL CHistoricalDataConverterDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 小さいアイコンの設定
 
 	// TODO: 初期化をここに追加します。
+	m_cmbDataFormat.SetCurSel(0);
 
 	return TRUE;  // フォーカスをコントロールに設定した場合を除き、TRUE を返します。
 }
@@ -192,6 +194,7 @@ void CHistoricalDataConverterDlg::OnBnClickedBtnCnvPeriod()
 	// TODO: ここにコントロール通知ハンドラー コードを追加します。
 	if( UpdateData(TRUE) ){
 		hdcCmdConvertPeriod cmd;
+		Hdc::DataForamt dataFormat = static_cast<Hdc::DataForamt>(m_cmbDataFormat.GetCurSel());
 
 		cmd.SetDataFolder( m_strDataFolder );
 		cmd.SetOutputFolder( m_strOutputFolder );
@@ -199,6 +202,7 @@ void CHistoricalDataConverterDlg::OnBnClickedBtnCnvPeriod()
 		cmd.SetOutputPeriod( m_nOutputPeriod );
 		cmd.SetShiftTime( m_nShiftTime );
 		cmd.SetSkipFirstRow(m_bSkipFirstLow);
+		cmd.SetDataFormat(dataFormat);
 
 		hdcCommand::Execute( cmd );
 	}

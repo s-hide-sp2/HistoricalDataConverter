@@ -8,9 +8,9 @@ hdcCmdConvertPeriod::hdcCmdConvertPeriod(void)
 	, m_nOutputPeriod(1)
 	, m_nShiftTime(0)
 	, m_bSkipFirstRow(true)
+	, m_dataFormat(Hdc::DataForamt::Normal)
 {
 }
-
 
 hdcCmdConvertPeriod::~hdcCmdConvertPeriod(void)
 {
@@ -81,7 +81,7 @@ Hdc::Result hdcCmdConvertPeriod::ConvertTimePeriod(
 	chart.SetSymbol( strSymbol );
 	chart.SetShiftTime( ShiftTime() );
 	chart.SetOutputPeriod( OutputPeriod() );
-	result = chart.Generate( strPath, Period(), strOutputPath, OutputPeriod(), SkipFirstRow() );
+	result = chart.Generate( strPath, Period(), strOutputPath, OutputPeriod(), SkipFirstRow(), DataFormat() );
 
 	return result;
 }

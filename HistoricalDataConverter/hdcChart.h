@@ -21,7 +21,7 @@ public:
 	virtual ~hdcChart(void);
 
 	//	チャートデータを生成する
-	Hdc::Result Generate(LPCTSTR lpszSrcPath, int nSrcPeriod, LPCTSTR lpszOutPath, int nOutputPeriod, bool bSkipFirstRow);
+	Hdc::Result Generate(LPCTSTR lpszSrcPath, int nSrcPeriod, LPCTSTR lpszOutPath, int nOutputPeriod, bool bSkipFirstRow, Hdc::DataForamt dataFormat);
 
 	//	ティックデータを元にチャートデータを生成する
 	Hdc::Result GenerateFromTick(LPCTSTR lpszSrcPath, LPCTSTR lpszOutPathBid, LPCTSTR lpszOutPathAsk, int nOutputPeriod);

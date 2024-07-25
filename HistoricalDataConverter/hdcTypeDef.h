@@ -62,4 +62,9 @@ namespace Hdc{
 		DDMMYY_HHMMSS,
 		YYYYMMDD_HHMMSS
 	};
+
+	enum DataForamt {
+		Normal,
+		ForexTester
+	};
 };

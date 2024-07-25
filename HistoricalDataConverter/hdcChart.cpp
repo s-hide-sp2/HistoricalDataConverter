@@ -21,7 +21,8 @@ Hdc::Result hdcChart::Generate(
 	int nSrcPeriod,			//(i)時間枠
 	LPCTSTR lpszOutPath,	//(i)出力データファイルパス
 	int nOutputPeriod,		//(i)出力時間枠
-	bool bSkipFirstRow		//(i)先頭行読み飛ばしフラグ
+	bool bSkipFirstRow,		//(i)先頭行読み飛ばしフラグ
+	Hdc::DataForamt dataFormat	//(i)データフォーマット
 	)
 {
 	Hdc::Result result = Hdc::rOk;
@@ -39,6 +40,7 @@ Hdc::Result hdcChart::Generate(
 		const TCHAR szSep[] = _T(",\t");
 		vecString vecToken;
 		hdcTime time, timePrev;
+		const int shift = (Hdc::DataForamt::Normal == dataFormat) ? 0 : 1;
 
 		InitOutputLogTerm();
 
@@ -57,7 +59,7 @@ Hdc::Result hdcChart::Generate(
 				continue;
 			}
 
-			result = hdcUtility::GetTimeYYYYMMDD_HHMMSS( time, vecToken[0], vecToken[1] );
+			result = hdcUtility::GetTimeYYYYMMDD_HHMMSS( time, vecToken[shift], vecToken[shift + 1] );
 
 			assert( result == Hdc::rOk );
 			if( IsOutputLog(time) )
@@ -87,10 +89,10 @@ Hdc::Result hdcChart::Generate(
 			
 			if( result == Hdc::rOk ){
 				double dRates[hdcBar::NUM_OF_BAR_VALUE_KIND];
-				int volume = (6 < vecToken.size()) ? _ttoi(vecToken[6]) : 1;
+				int volume = (6 < vecToken.size()) ? _ttoi(vecToken[shift + 6]) : 1;
 
 				for( int n = 0; n < hdcBar::NUM_OF_BAR_VALUE_KIND; n++ )
-					dRates[n] = _ttof( vecToken[2+n] );
+					dRates[n] = _ttof( vecToken[shift + 2 + n] );
 
 				result = AddBarTemp( bNext, time, dRates, volume);
 			}

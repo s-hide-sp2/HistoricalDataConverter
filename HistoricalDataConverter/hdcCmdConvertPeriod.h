@@ -24,6 +24,10 @@ public:
 	bool SkipFirstRow() const;
 	void SetSkipFirstRow(bool value);
 
+	//	データフォーマット
+	Hdc::DataForamt DataFormat() const;
+	void SetDataFormat(Hdc::DataForamt value);
+
 protected:
 
 	//	コマンドを実行する
@@ -53,6 +57,9 @@ private:
 
 	//	先頭行読み飛ばしフラグ
 	bool m_bSkipFirstRow;
+
+	//	データフォーマット
+	Hdc::DataForamt m_dataFormat;
 };
 
 inline void hdcCmdConvertPeriod::SetPeriod( int value )
@@ -93,4 +100,15 @@ inline bool hdcCmdConvertPeriod::SkipFirstRow() const
 inline void hdcCmdConvertPeriod::SetSkipFirstRow(bool value)
 {
 	m_bSkipFirstRow = value;
+}
+
+//	データフォーマット
+inline Hdc::DataForamt hdcCmdConvertPeriod::DataFormat() const
+{
+	return m_dataFormat;
+}
+
+inline void hdcCmdConvertPeriod::SetDataFormat(Hdc::DataForamt value)
+{
+	m_dataFormat = value;
 }
