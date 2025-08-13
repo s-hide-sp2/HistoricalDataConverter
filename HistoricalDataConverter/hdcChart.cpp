@@ -699,7 +699,7 @@ void hdcChart::GetLackData( mapBar& bars, const hdcBar& barAfter, const hdcBar& 
 }
 
 //	欠損データを出力する
-Hdc::Result hdcChart::OutputLackData(LPCTSTR lpszSrcPath, int nSrcPeriod, LPCTSTR lpszOutPath, bool bSkipFirstRow)
+Hdc::Result hdcChart::OutputLackData(LPCTSTR lpszSrcPath, int nSrcPeriod, LPCTSTR lpszOutPath, bool bSkipFirstRow, Hdc::DataForamt dataFormat)
 {
 	Hdc::Result result = Hdc::rOk;
 
@@ -727,7 +727,11 @@ Hdc::Result hdcChart::OutputLackData(LPCTSTR lpszSrcPath, int nSrcPeriod, LPCTST
 			bRead = cfr.ReadString(strData);
 
 			if (bRead) {
-				result = hdcBar::Generate(barA, strData, Hdc::Bid);
+				result = hdcBar::Generate(barA, strData, Hdc::Bid, dataFormat);
+
+				if (Hdc::rOk == result) {
+					barA.SetTime(barA.Time() + ShiftTime());
+				}
 
 				//	欠落データを出力する
 				if (Hdc::rOk == result && !isFirst) {

@@ -33,7 +33,7 @@ public:
 	Hdc::Result FillLackData( LPCTSTR lpszSrcPath, int nSrcPeriod, LPCTSTR lpszOutPath, bool bSkipFirstRow );
 
 	//	欠損データを出力する
-	Hdc::Result OutputLackData(LPCTSTR lpszSrcPath, int nSrcPeriod, LPCTSTR lpszOutPath, bool bSkipFirstRow);
+	Hdc::Result OutputLackData(LPCTSTR lpszSrcPath, int nSrcPeriod, LPCTSTR lpszOutPath, bool bSkipFirstRow, Hdc::DataForamt dataFormat);
 
 	///////////////////////////////////////////////////
 	//

@@ -9,7 +9,12 @@ public:
 	hdcBar(void);
 	virtual ~hdcBar(void);
 
-	static Hdc::Result Generate( hdcBar& bar, const CString& strData, Hdc::BarKind barKind = Hdc::Bid );
+	static Hdc::Result Generate(
+		hdcBar& bar,
+		const CString& strData,
+		Hdc::BarKind barKind = Hdc::Bid,
+		Hdc::DataForamt dataFormat = Hdc::DataForamt::Normal
+	);
 
 	//	ƒŒ[ƒg‚ğ•Ô‚·
 	double Rate( Hdc::RateKind rateKind, Hdc::BarKind barKind = Hdc::Bid ) const;

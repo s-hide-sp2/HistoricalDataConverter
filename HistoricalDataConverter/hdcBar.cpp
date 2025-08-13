@@ -14,12 +14,18 @@ hdcBar::~hdcBar(void)
 {
 }
 
-Hdc::Result hdcBar::Generate( hdcBar& bar, const CString& strData, Hdc::BarKind barKind )
+Hdc::Result hdcBar::Generate( 
+	hdcBar& bar,
+	const CString& strData,
+	Hdc::BarKind barKind,
+	Hdc::DataForamt dataFormat
+	)
 {
 	Hdc::Result result = Hdc::rOk;
 	vecString vecToken;
 	hdcTime time;
 	const TCHAR szSep[] = _T(",\t");
+	const int shift = (Hdc::DataForamt::Normal == dataFormat) ? 0 : 1;
 
 	vecToken.reserve(6);
 	hdcUtility::GetTokens( vecToken, strData, szSep );
@@ -28,15 +34,15 @@ Hdc::Result hdcBar::Generate( hdcBar& bar, const CString& strData, Hdc::BarKind 
 		result = Hdc::rFail;
 	}
 	else{
-		result = hdcUtility::GetTimeYYYYMMDD_HHMMSS( time, vecToken[0], vecToken[1] );
+		result = hdcUtility::GetTimeYYYYMMDD_HHMMSS( time, vecToken[shift], vecToken[shift+1] );
 	}
 
 	if( Hdc::rOk == result ){
 		double dRates[NUM_OF_BAR_VALUE_KIND];
-		int volume = (6 < vecToken.size()) ? _ttoi(vecToken[6]) : 1;
+		int volume = (6 < vecToken.size()) ? _ttoi(vecToken[shift + 6]) : 1;
 		
 		for( int n = 0; n < NUM_OF_BAR_VALUE_KIND; n++ ){
-			dRates[n] = _ttof( vecToken[n+2] );
+			dRates[n] = _ttof( vecToken[shift + n + 2] );
 		}
 
 		bar.SetTime( time );

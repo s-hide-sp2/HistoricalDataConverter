@@ -253,11 +253,14 @@ void CHistoricalDataConverterDlg::OnBnClickedBtnOutLackData()
 	// TODO: ここにコントロール通知ハンドラー コードを追加します。
 	if (UpdateData(TRUE)) {
 		hdcCmdOutLackData cmd;
+		Hdc::DataForamt dataFormat = static_cast<Hdc::DataForamt>(m_cmbDataFormat.GetCurSel());
 
 		cmd.SetDataFolder(m_strDataFolder);
 		cmd.SetOutputFolder(m_strOutputFolder);
 		cmd.SetPeriod(m_nPeriod);
 		cmd.SetSkipFirstRow(m_bSkipFirstLow);
+		cmd.SetDataFormat(dataFormat);
+		cmd.SetShiftTime(m_nShiftTime);
 
 		hdcCommand::Execute(cmd);
 	}

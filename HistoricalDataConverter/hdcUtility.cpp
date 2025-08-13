@@ -126,7 +126,27 @@ Hdc::Result hdcUtility::GetTimeYYYYMMDD_HHMMSS(
 //	エラーメッセージを返す
 CString hdcUtility::GetErrorMsg( Hdc::Result result )
 {
-	return _T("");
+	CString msg;
+
+	switch (result) {
+	case Hdc::Result::rOk:
+		msg = _T("Result::rOk");
+		break;
+	case Hdc::Result::rCancel:
+		msg = _T("Result::rCancel");
+		break;
+	case Hdc::Result::rFail:
+		msg = _T("Result::rFail");
+		break;
+	case Hdc::Result::rFileOpenError:
+		msg = _T("Result::rFileOpenError");
+		break;
+	case Hdc::Result::rInvalidDateTime:
+		msg = _T("Result::rInvalidDateTime");
+		break;
+	}
+
+	return msg;
 }
 
 //	ログ出力

@@ -3,6 +3,7 @@
 #include "hdcChart.h"
 
 hdcCmdOutLackData::hdcCmdOutLackData()
+	: m_dataFormat(Hdc::DataForamt::Normal)
 {
 }
 
@@ -14,8 +15,9 @@ Hdc::Result hdcCmdOutLackData::Execute(const CString& strPath, const CString& st
 	CString strOutputPath, strSuffix;
 
 	chart.SetSymbol(strTitle.Left(6));
+	chart.SetShiftTime(ShiftTime());
 	strOutputPath = GetOutputFilePath(strFileName, strSuffix);
-	result = chart.OutputLackData(strPath, Period(), strOutputPath, SkipFirstRow());
+	result = chart.OutputLackData(strPath, Period(), strOutputPath, SkipFirstRow(), DataFormat());
 
 	return result;
 }
